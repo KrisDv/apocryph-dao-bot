@@ -87,10 +87,11 @@ namespace Apocryph.Dao.Bot.Services
                 await _inboundChannel.Writer.WriteAsync(new GetBalanceMessage(message.Author.Id));
             }
 
-            if (tokens[0] == "/vote")
+            if (tokens.Length == 1 && tokens[0] == "/vote")
             {
                 //This is here for testing
-                await message.Channel.SendMessageAsync(_config.VoteProposalUrl);
+                //http://localhost:8080/vote/create
+                await message.Channel.SendMessageAsync(_config.VoteCreationUrl);
             }
 
         }
