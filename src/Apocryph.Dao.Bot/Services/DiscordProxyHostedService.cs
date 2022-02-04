@@ -10,6 +10,8 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Ipfs;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Apocryph.Dao.Bot.Services
 {
@@ -89,9 +91,33 @@ namespace Apocryph.Dao.Bot.Services
 
             if (tokens.Length == 1 && tokens[0] == "/vote")
             {
-                //This is here for testing
-                //http://localhost:8080/vote/create
-                await message.Channel.SendMessageAsync(_config.VoteCreationUrl);
+                // Respond with vote creation URL
+
+#if true
+                var embedMessage = new EmbedBuilder
+                {
+                    Title = $"DAO - Vote Creation",
+                    Description = "Post a new vote",
+                    Url = _config.VoteCreationUrl,
+                    ThumbnailUrl = MessageResources.ProposalEventMessage_GetThumbnailUrl,
+                    Color = new Color(33)
+                }.Build();
+
+                await message.Channel.SendMessageAsync(string.Empty, false, embedMessage);
+#else
+
+                // TODO: get this contract address from the config. This is hard-coded here for testing.
+                const string CONTRACT_ADDRESS = "0xB4992Cdf85c58DBaeAdf6077411C7e93Dd29e103";
+
+                var creationMessage = new VoteCreationMessage()
+                {
+                    Url = _config.VoteCreationUrl,
+                    ContractAddress = CONTRACT_ADDRESS,
+                    Channel = "community"
+                };
+
+                await _outboundChannel.Writer.WriteAsync(creationMessage);
+#endif
             }
 
         }
