@@ -93,7 +93,6 @@ namespace Apocryph.Dao.Bot.Services
             {
                 // Respond with vote creation URL
 
-#if true
                 var embedMessage = new EmbedBuilder
                 {
                     Title = $"DAO - Vote Creation",
@@ -103,21 +102,8 @@ namespace Apocryph.Dao.Bot.Services
                     Color = new Color(33)
                 }.Build();
 
+                // TODO: probably use VoteCreationMessage
                 await message.Channel.SendMessageAsync(string.Empty, false, embedMessage);
-#else
-
-                // TODO: get this contract address from the config. This is hard-coded here for testing.
-                const string CONTRACT_ADDRESS = "0xB4992Cdf85c58DBaeAdf6077411C7e93Dd29e103";
-
-                var creationMessage = new VoteCreationMessage()
-                {
-                    Url = _config.VoteCreationUrl,
-                    ContractAddress = CONTRACT_ADDRESS,
-                    Channel = "community"
-                };
-
-                await _outboundChannel.Writer.WriteAsync(creationMessage);
-#endif
             }
 
         }
